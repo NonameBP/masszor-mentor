@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0F6E56">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FlowSense">
+<title>Masszőr Mentor</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1D9E75;
+    --green-dark: #0F6E56;
+    --green-light: #E1F5EE;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --coral: #993C1D;
+    --coral-light: #FAECE7;
+    --bg: #F8FAF9;
+    --card: #FFFFFF;
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --text-hint: #9ca3af;
+    --border: rgba(0,0,0,0.09);
+    --border-strong: rgba(0,0,0,0.15);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1410;
+      --card: #1a2118;
+      --text: #f0f4f1;
+      --text-muted: #9ca3af;
+      --text-hint: #6b7280;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --green-light: #0d2e22;
+      --purple-light: #1a1840;
+      --blue-light: #0d1e33;
+      --coral-light: #2a1208;
+    }
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 1.25rem 1.25rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-brand { font-size: 22px; font-weight: 700; color: var(--green-dark); letter-spacing: -0.5px; }
+  .header-date { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+  .header-logo {
+    width: 40px; height: 40px;
+    background: var(--green-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  /* VIEWS */
+  .view { display: none; padding: 0 1.25rem; flex: 1; }
+  .view.active { display: block; }
+
+  /* TIP CARD */
+  .tip-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .tip-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .cat-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+  .cat-szemlelet { background: var(--purple-light); color: var(--purple); }
+  .cat-anatomia { background: var(--blue-light); color: var(--blue); }
+  .cat-lelki { background: var(--coral-light); color: var(--coral); }
+
+  .tip-source { font-size: 11px; color: var(--text-hint); }
+  .tip-text {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .tip-number {
+    font-size: 11px;
+    color: var(--text-hint);
+    text-align: right;
+  }
+
+  /* DOTS */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .dot.active { background: var(--green); transform: scale(1.3); }
+
+  /* BUTTONS */
+  .btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .btn {
+    background: var(--card);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { background: var(--bg); }
+  .btn.btn-saved { color: var(--green-dark); border-color: var(--green); }
+  .btn-icon { font-size: 18px; }
+
+  /* CATEGORIES */
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .cat-chip {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cat-chip.active { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+  .cat-chip-icon { font-size: 16px; }
+
+  /* SAVED */
+  .saved-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-hint);
+    font-size: 14px;
+  }
+  .saved-item {
+    background: var(--card);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--green);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .saved-item-meta {
+    font-size: 11px;
+    color: var(--text-hint);
+    margin-top: 6px;
+  }
+
+  /* ABOUT */
+  .about-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .about-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .about-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .about-author {
+    font-size: 12px;
+    color: var(--text-hint);
+    margin-top: 0.75rem;
+    font-style: italic;
+  }
+  .about-divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--card);
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 0;
+    cursor: pointer;
+    color: var(--text-hint);
+    font-size: 10px;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: none;
+  }
+  .nav-item.active { color: var(--green-dark); }
+  .nav-icon { font-size: 22px; }
+
+  /* DAILY HIGHLIGHT */
+  .daily-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green-dark);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .daily-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  /* SWIPE HINT */
+  .swipe-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-hint);
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div>
+      <div class="header-brand">Masszőr Mentor</div>
+      <div class="header-date" id="header-date"></div>
+    </div>
+    <div class="header-logo">🌿</div>
+  </div>
+
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <div class="daily-label">
+      <div class="daily-dot"></div>
+      Mai tipp
+    </div>
+
+    <div class="tip-card" id="tip-card">
+      <div class="tip-top">
+        <span class="cat-badge" id="tip-badge">Szemlélet</span>
+        <span class="tip-source" id="tip-source">Kata</span>
+      </div>
+      <p class="tip-text" id="tip-text">Töltés...</p>
+      <div class="tip-number" id="tip-number"></div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-save" onclick="toggleSave()">
+        <span class="btn-icon">🔖</span> Mentés
+      </button>
+      <button class="btn" onclick="nextTip()">
+        <span class="btn-icon">↻</span> Következő
+      </button>
+    </div>
+
+    <div class="section-label">Témák</div>
+    <div class="cat-grid">
+      <div class="cat-chip active" data-cat="mind" onclick="filterCat(this)">
+        <span class="cat-chip-icon">✦</span> Összes
+      </div>
+      <div class="cat-chip" data-cat="szemlelet" onclick="filterCat(this)">
+        <span class="cat-chip-icon">💡</span> Szemlélet
+      </div>
+      <div class="cat-chip" data-cat="anatomia" onclick="filterCat(this)">
+        <span class="cat-chip-icon">🫀</span> Anatómia
+      </div>
+      <div class="cat-chip" data-cat="lelki" onclick="filterCat(this)">
+        <span class="cat-chip-icon">🌱</span> Lelki egészség
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVED -->
+  <div class="view" id="view-saved">
+    <div class="section-label">Mentett tippek</div>
+    <div id="saved-list">
+      <div class="saved-empty">Még nincs mentett tipped.<br>Nyomd meg a 🔖 gombot egy tippnél.</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="about-card">
+      <div class="about-title">Mi a FlowSense?</div>
+      <div class="about-text">
+        A FlowSense egy szemlélet, nem technika. Figyeld a változást, kövesd a testet – és a test megmutatja az utat.
+      </div>
+      <div class="about-author">— Kata, gyógymasszőr, 30 év tapasztalat</div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-title">A négy lépés</div>
+      <div class="about-divider"></div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--green-dark);margin-bottom:2px;">1. Vedd észre</div>
+          <div class="about-text">Mi van most? Érzékeld a test aktuális állapotát ítélet nélkül.</div>
+        </div>
+        <div class="about-divider"></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--green-dark);margin-bottom:2px;">2. Kövesd</div>
+          <div class="about-text">Menj a változással. Ne a terveddel, hanem azzal ami éppen történik.</div>
+        </div>
+        <div class="about-divider"></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--green-dark);margin-bottom:2px;">3. A változás megtörténik</div>
+          <div class="about-text">Nem te csinálod – a test csinálja. Te csak lehetővé teszed.</div>
+        </div>
+        <div class="about-divider"></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--green-dark);margin-bottom:2px;">4. Figyeld a változást</div>
+          <div class="about-text">Mit látsz most? A visszajelzés vezeti a következő lépést.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-title">A tippekről</div>
+      <div class="about-text">
+        A tippek egy részét Kata írja 30 év klinikai tapasztalatából. Más tippek szakirodalomból, evidence-based forrásokból születnek. Minden tartalom masszőröknek szól, masszőrtől.
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="showView('home')">
+      <span class="nav-icon">⌂</span>
+      Ma
+    </button>
+    <button class="nav-item" id="nav-saved" onclick="showView('saved')">
+      <span class="nav-icon">🔖</span>
+      Mentett
+    </button>
+    <button class="nav-item" id="nav-about" onclick="showView('about')">
+      <span class="nav-icon">◎</span>
+      Rólunk
+    </button>
+  </nav>
+</div>
+
+<script>
+const TIPS = [
+  { text: "A test mindig visszajelez. A kérdés az, hogy figyelünk-e rá. Ne a terved alapján dolgozz – figyeld mi történik, és folytasd aszerint.", cat: "szemlelet", source: "Kata" },
+  { text: "Az izom lazítása nem egyenlő a fájdalom megszüntetésével. Kérdezd meg: miért feszes? Mi tart ott valamit?", cat: "szemlelet", source: "Kata" },
+  { text: "Ha a kliens visszatartja a légzését, valami túl intenzív. A légzés az első visszajelzés – figyeld mindig.", cat: "szemlelet", source: "Kata" },
+  { text: "Ne erőltesd a változást. Adj időt a szövetnek. A gyorsaság nem azonos a hatékonysággal.", cat: "szemlelet", source: "Kata" },
+  { text: "A test vezet, te követed. Ha ez megfordul, elveszted a kapcsolatot a vendéggel.", cat: "szemlelet", source: "Kata" },
+  { text: "Minden kezelés más – még ugyanannál a vendégnél is. A tegnapelőtti protokoll ma nem biztos, hogy működik.", cat: "szemlelet", source: "Kata" },
+  { text: "A fascia nem egy réteg – egy folyamatos hálózat. Amit az egyik ponton csinálsz, messze máshol is érezhető.", cat: "anatomia", source: "Szakirodalom" },
+  { text: "A trapézizom feszülése ritkán a trapézizom problémája. Keress szélesebb összefüggéseket.", cat: "anatomia", source: "Szakirodalom" },
+  { text: "A légzőizmok – különösen a rekeszizom – szorosan kapcsolódnak a derékfájdalomhoz. A légzés mindig benne van a képben.", cat: "anatomia", source: "Szakirodalom" },
+  { text: "A nyaki izmok egy részének eredése a koponya alapján van. A fejfájás és a nyakizom kapcsolata nem véletlen.", cat: "anatomia", source: "Szakirodalom" },
+  { text: "A bőr is szövet. Az érintés első rétege – ne menj át rajta azonnal mélyebbre. Figyelj rá.", cat: "anatomia", source: "Szakirodalom" },
+  { text: "A masszőr munkája fizikailag megterhelő. Vigyázz magadra legalább annyira, mint a vendégeidre.", cat: "lelki", source: "Kata" },
+  { text: "Ha kimerült vagy, a kezed is azt közvetíti. A vendéged megérzi. A saját feltöltődésed a munkád része.", cat: "lelki", source: "Kata" },
+  { text: "Nem minden fájdalmat tudsz megoldani. Megtanulni elengedni – ez is szakmai készség.", cat: "lelki", source: "Kata" },
+  { text: "A vendég bizalma nem magától jön. Felépíteni évekbe telik, elveszíteni percekbe. Bánj vele tisztelettel.", cat: "lelki", source: "Kata" },
+  { text: "A burnout a segítő szakmák egyik legnagyobb kockázata. Nem gyengeség – figyelmeztető jel. Hallgass rá.", cat: "lelki", source: "Szakirodalom" },
+];
+
+const CAT_LABELS = { szemlelet: "Szemlélet", anatomia: "Anatómia", lelki: "Lelki egészség" };
+const CAT_CLASS = { szemlelet: "cat-szemlelet", anatomia: "cat-anatomia", lelki: "cat-lelki" };
+
+let currentFilter = "mind";
+let filteredTips = [...TIPS];
+let currentIdx = 0;
+let saved = JSON.parse(localStorage.getItem("fs_saved") || "[]");
+
+function getFiltered() {
+  return currentFilter === "mind" ? TIPS : TIPS.filter(t => t.cat === currentFilter);
+}
+
+function renderTip() {
+  filteredTips = getFiltered();
+  if (!filteredTips.length) return;
+  const idx = currentIdx % filteredTips.length;
+  const t = filteredTips[idx];
+  document.getElementById("tip-text").textContent = t.text;
+  document.getElementById("tip-source").textContent = t.source;
+  const badge = document.getElementById("tip-badge");
+  badge.textContent = CAT_LABELS[t.cat];
+  badge.className = "cat-badge " + CAT_CLASS[t.cat];
+  document.getElementById("tip-number").textContent = (idx + 1) + " / " + filteredTips.length;
+  renderDots();
+  updateSaveBtn();
+}
+
+function renderDots() {
+  const container = document.getElementById("dots");
+  const count = Math.min(filteredTips.length, 10);
+  const idx = currentIdx % filteredTips.length;
+  container.innerHTML = Array.from({length: count}, (_, i) =>
+    `<div class="dot${i === idx ? " active" : ""}" onclick="jumpTo(${i})"></div>`
+  ).join("");
+}
+
+function jumpTo(i) { currentIdx = i; renderTip(); }
+
+function nextTip() {
+  filteredTips = getFiltered();
+  currentIdx = (currentIdx + 1) % filteredTips.length;
+  renderTip();
+}
+
+function toggleSave() {
+  filteredTips = getFiltered();
+  const t = filteredTips[currentIdx % filteredTips.length];
+  const key = t.text.substring(0, 40);
+  const idx = saved.findIndex(s => s.key === key);
+  if (idx === -1) {
+    saved.push({ key, text: t.text, cat: t.cat, source: t.source });
+  } else {
+    saved.splice(idx, 1);
+  }
+  localStorage.setItem("fs_saved", JSON.stringify(saved));
+  updateSaveBtn();
+  renderSavedList();
+}
+
+function updateSaveBtn() {
+  filteredTips = getFiltered();
+  const t = filteredTips[currentIdx % filteredTips.length];
+  const key = t.text.substring(0, 40);
+  const isSaved = saved.some(s => s.key === key);
+  const btn = document.getElementById("btn-save");
+  btn.className = "btn" + (isSaved ? " btn-saved" : "");
+  btn.innerHTML = isSaved ? '<span class="btn-icon">✓</span> Mentve' : '<span class="btn-icon">🔖</span> Mentés';
+}
+
+function renderSavedList() {
+  const el = document.getElementById("saved-list");
+  if (!saved.length) {
+    el.innerHTML = '<div class="saved-empty">Még nincs mentett tipped.<br>Nyomd meg a 🔖 gombot egy tippnél.</div>';
+    return;
+  }
+  el.innerHTML = saved.map(s => `
+    <div class="saved-item">
+      ${s.text}
+      <div class="saved-item-meta">${CAT_LABELS[s.cat] || s.cat} · ${s.source}</div>
+    </div>
+  `).join("");
+}
+
+function filterCat(el) {
+  currentFilter = el.dataset.cat;
+  currentIdx = 0;
+  document.querySelectorAll(".cat-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderTip();
+}
+
+function showView(name) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  document.getElementById("view-" + name).classList.add("active");
+  document.getElementById("nav-" + name).classList.add("active");
+  if (name === "saved") renderSavedList();
+}
+
+const days = ["vasárnap","hétfő","kedd","szerda","csütörtök","péntek","szombat"];
+const months = ["január","február","március","április","május","június","július","augusztus","szeptember","október","november","december"];
+const now = new Date();
+document.getElementById("header-date").textContent =
+  `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}.`;
+
+// Napi tipp: minden nap más tipp az index alapján
+const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+currentIdx = dayOfYear % TIPS.length;
+
+renderTip();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
