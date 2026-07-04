@@ -10,31 +10,28 @@
 <title>Masszőr Mentor</title>
 <link rel="manifest" href="manifest.json">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --navy: #2B3A6B;
-    --navy-mid: #3d5096;
-    --navy-light: #eef0f8;
-    --navy-glow: rgba(43,58,107,0.12);
-    --white: #FFFFFF;
-    --bg: #F2F4FA;
-    --card: #FFFFFF;
-    --text: #1a2140;
-    --text-muted: #5a6480;
-    --text-hint: #9ba3bf;
-    --border: rgba(43,58,107,0.09);
-    --border-strong: rgba(43,58,107,0.16);
-    --radius: 18px;
-    --radius-sm: 12px;
-    --purple: #6C5CE7;
-    --purple-light: #F0EEFF;
-    --teal: #0984a3;
-    --teal-light: #E5F6FA;
-    --coral: #B04A2A;
-    --coral-light: #FAEAE5;
+    --navy:       #1E2D52;
+    --navy-deep:  #141d36;
+    --navy-mid:   #2B3A6B;
+    --navy-light: #EBEEf7;
+    --gold:       #B8960C;
+    --gold-light: #FDF6DC;
+    --white:      #FFFFFF;
+    --bg:         #F5F6FA;
+    --card:       #FFFFFF;
+    --text:       #0F172A;
+    --text-muted: #475569;
+    --text-hint:  #94A3B8;
+    --border:     rgba(30,45,82,0.08);
+    --shadow-sm:  0 2px 12px rgba(30,45,82,0.07);
+    --shadow-md:  0 6px 28px rgba(30,45,82,0.12);
+    --radius:     20px;
+    --radius-sm:  14px;
   }
 
   html, body {
@@ -51,50 +48,65 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding-bottom: 88px;
+    padding-bottom: 90px;
   }
+
+  /* INSTALL BUTTON */
+  #install-btn {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(30,45,82,0.35);
+    z-index: 100;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  #install-btn.visible { display: block; animation: slideup 0.3s ease; }
+  @keyframes slideup { from { opacity:0; transform:translateX(-50%) translateY(20px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
 
   /* HEADER */
   .header {
-    background: linear-gradient(135deg, #1e2d52 0%, #2B3A6B 60%, #3d5096 100%);
-    padding: 1.5rem 1.25rem 2rem;
+    background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 50%, var(--navy-mid) 100%);
+    padding: 1.5rem 1.25rem 2.25rem;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    border-radius: 0 0 28px 28px;
+    border-radius: 0 0 32px 32px;
     margin-bottom: 1.5rem;
     position: relative;
     overflow: hidden;
   }
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -30px; right: -30px;
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-  }
   .header::after {
     content: '';
     position: absolute;
-    bottom: -20px; left: 30px;
-    width: 80px; height: 80px;
+    bottom: -30px; right: -30px;
+    width: 160px; height: 160px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.04);
   }
   .header-brand {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 600;
     color: var(--white);
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
     line-height: 1.2;
   }
   .header-date {
-    font-size: 11px;
-    color: rgba(255,255,255,0.55);
-    margin-top: 5px;
-    letter-spacing: 0.03em;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 6px;
+    letter-spacing: 0.02em;
   }
 
   /* VIEWS */
@@ -105,41 +117,38 @@
   .daily-label {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     font-size: 10px;
     font-weight: 700;
     color: var(--navy);
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.9rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
   }
   .daily-dot {
-    width: 6px; height: 6px;
+    width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--navy);
-    animation: pulse 2s infinite;
+    background: var(--gold);
+    animation: pulse 2.5s infinite;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
 
   /* TIP CARD */
   .tip-card {
     background: var(--card);
-    border: 0.5px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 1.6rem 1.4rem;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 24px rgba(43,58,107,0.08);
+    box-shadow: var(--shadow-md);
     position: relative;
+    border-top: 3px solid var(--navy);
   }
   .tip-card::before {
     content: '“';
     position: absolute;
-    top: 12px; right: 18px;
+    top: 6px; right: 14px;
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 72px;
+    font-size: 90px;
     color: var(--navy-light);
     line-height: 1;
     pointer-events: none;
@@ -148,71 +157,53 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
   }
   .cat-badge {
     font-size: 10px;
     font-weight: 700;
     padding: 4px 12px;
     border-radius: 100px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
   }
-  .cat-szemlelet { background: var(--purple-light); color: var(--purple); }
-  .cat-anatomia { background: var(--teal-light); color: var(--teal); }
-  .cat-lelki { background: var(--coral-light); color: var(--coral); }
-.cat-vendeg { background: #E8F5E9; color: #2E7D32; }
+  .cat-szemlelet { background: var(--navy-light); color: var(--navy); }
+  .cat-anatomia  { background: var(--navy-light); color: var(--navy-mid); }
+  .cat-lelki     { background: var(--navy-light); color: var(--navy); }
+  .cat-vendeg    { background: var(--gold-light); color: var(--gold); }
 
-  .tip-source {
-    font-size: 11px;
-    color: var(--text-hint);
-    font-style: italic;
-  }
+  .tip-source { font-size: 11px; color: var(--text-hint); font-style: italic; }
+
   .tip-text {
-    font-size: 16px;
-    line-height: 1.8;
+    font-size: 19px;
+    line-height: 1.75;
     color: var(--text);
     margin-bottom: 1.25rem;
     font-weight: 400;
     position: relative;
     z-index: 1;
   }
-  .tip-number {
-    font-size: 11px;
-    color: var(--text-hint);
-    text-align: right;
-    letter-spacing: 0.05em;
-  }
+  .tip-number { font-size: 11px; color: var(--text-hint); text-align: right; letter-spacing: 0.05em; }
 
   /* DOTS */
-  .dots {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 1rem;
-  }
+  .dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 1.1rem; }
   .dot {
     width: 5px; height: 5px;
     border-radius: 50%;
-    background: var(--border-strong);
+    background: rgba(30,45,82,0.2);
     cursor: pointer;
     transition: all 0.25s;
   }
-  .dot.active { background: var(--navy); width: 18px; border-radius: 3px; }
+  .dot.active { background: var(--navy); width: 22px; border-radius: 3px; }
 
   /* BUTTONS */
-  .btn-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1.75rem;
-  }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.75rem; }
   .btn {
     background: var(--navy-light);
     border: none;
     border-radius: var(--radius-sm);
-    padding: 14px;
-    font-size: 13px;
+    padding: 15px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--navy);
     cursor: pointer;
@@ -222,36 +213,26 @@
     gap: 8px;
     transition: all 0.2s;
     -webkit-tap-highlight-color: transparent;
-    letter-spacing: 0.01em;
+    font-family: inherit;
   }
   .btn:active { transform: scale(0.97); }
-  .btn.btn-saved {
-    background: var(--navy);
-    color: var(--white);
-    box-shadow: 0 4px 16px rgba(43,58,107,0.25);
-  }
+  .btn.btn-saved { background: var(--navy); color: var(--white); box-shadow: 0 4px 16px rgba(30,45,82,0.28); }
 
   /* CATEGORIES */
   .section-label {
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 10px; font-weight: 700;
     color: var(--text-hint);
     margin-bottom: 0.85rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
-  .cat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
+  .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
   .cat-chip {
     background: var(--card);
     border: 1.5px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 13px 12px;
-    font-size: 13px;
+    padding: 14px 12px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--text-muted);
     cursor: pointer;
@@ -260,97 +241,56 @@
     gap: 9px;
     transition: all 0.2s;
     -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 1px 4px rgba(43,58,107,0.04);
+    box-shadow: var(--shadow-sm);
   }
-  .cat-chip.active {
-    border-color: var(--navy);
-    color: var(--navy);
-    background: var(--navy-light);
-    box-shadow: 0 2px 12px rgba(43,58,107,0.12);
-  }
+  .cat-chip.active { border-color: var(--navy); color: var(--navy); background: var(--navy-light); font-weight: 600; }
+  .cat-chip[data-cat="vendeg"].active { border-color: var(--gold); color: var(--gold); background: var(--gold-light); }
 
   /* SAVED */
-  .saved-empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--text-hint);
-    font-size: 14px;
-    line-height: 1.7;
-  }
+  .saved-empty { text-align: center; padding: 3rem 1rem; color: var(--text-hint); font-size: 15px; line-height: 1.7; }
   .saved-item {
     background: var(--card);
     border-radius: var(--radius-sm);
-    padding: 1rem 1.1rem;
+    padding: 1.1rem;
     margin-bottom: 10px;
-    border-left: 3px solid var(--navy);
-    font-size: 14px;
+    border-left: 4px solid var(--navy);
+    font-size: 15px;
     line-height: 1.7;
     color: var(--text);
-    box-shadow: 0 2px 10px rgba(43,58,107,0.06);
+    box-shadow: var(--shadow-sm);
   }
-  .saved-item-meta {
-    font-size: 11px;
-    color: var(--text-hint);
-    margin-top: 8px;
-    font-style: italic;
-  }
+  .saved-item-meta { font-size: 11px; color: var(--text-hint); margin-top: 8px; font-style: italic; }
 
   /* ABOUT */
-  .about-card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.4rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 24px rgba(43,58,107,0.07);
-  }
-  .about-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--navy);
-    margin-bottom: 0.6rem;
-  }
-  .about-text { font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+  .about-card { background: var(--card); border-radius: var(--radius); padding: 1.4rem; margin-bottom: 1rem; box-shadow: var(--shadow-md); }
+  .about-title { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--navy); margin-bottom: 0.6rem; }
+  .about-text { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
   .about-author { font-size: 12px; color: var(--text-hint); margin-top: 0.85rem; font-style: italic; }
-  .about-divider { height: 0.5px; background: var(--border); margin: 1rem 0; }
-  .step-label { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+  .about-divider { height: 1px; background: var(--border); margin: 1rem 0; }
+  .step-label { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
 
   /* BOTTOM NAV */
   .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 0.5px solid var(--border);
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
     display: flex;
     padding: 10px 0 max(10px, env(safe-area-inset-bottom));
-    box-shadow: 0 -4px 24px rgba(43,58,107,0.08);
+    box-shadow: 0 -4px 24px rgba(30,45,82,0.07);
   }
   .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    padding: 4px 0;
-    cursor: pointer;
-    color: var(--text-hint);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    transition: color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    border: none;
-    background: none;
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; padding: 4px 0;
+    cursor: pointer; color: var(--text-hint);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+    transition: color 0.15s; -webkit-tap-highlight-color: transparent;
+    border: none; background: none; font-family: inherit;
   }
   .nav-item.active { color: var(--navy); }
-  .nav-icon { font-size: 22px; }
+  .nav-icon { font-size: 24px; }
 </style>
 </head>
 <body>
@@ -461,6 +401,8 @@
       </div>
     </div>
   </div>
+
+  <button id="install-btn" onclick="installApp()">📲 Telepítés a telefonra</button>
 
   <nav class="bottom-nav">
     <button class="nav-item active" id="nav-home" onclick="showView('home')">
@@ -726,6 +668,32 @@ const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 8640000
 currentIdx = dayOfYear % TIPS.length;
 
 renderTip();
+
+// PWA Install Prompt
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById("install-btn");
+  if (btn) btn.classList.add("visible");
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredPrompt = null;
+  const btn = document.getElementById("install-btn");
+  if (btn) btn.classList.remove("visible");
+});
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    const btn = document.getElementById("install-btn");
+    if (btn) btn.classList.remove("visible");
+  });
+}
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
